@@ -2,6 +2,7 @@ import asyncio
 import http
 import signal
 import json
+import uuid
 
 import websockets
 
