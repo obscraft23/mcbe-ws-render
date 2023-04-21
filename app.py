@@ -44,7 +44,9 @@ class WsServer:
         print("test")
         try:
             while True:
+                print("test1")
                 data = await self.ws.recv()
+                print("test2")
                 await self.parse_command(json.loads(data))
         except (websockets.exceptions.ConnectionClosedOK,websockets.exceptions.ConnectionClosedError,websockets.exceptions.ConnectionClosed):
             #await self.event("disconnect")  # self.event_disconnect()
