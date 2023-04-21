@@ -13,10 +13,25 @@ class WsServer:
     def start(self,host="0.0.0.0",port=19132):
         self.host = host
         self.port = port
+        asyncio.run(self.main())
+        """
         self.ws = websockets.serve(self.receive, self.host, self.port, process_request=self.health_check)
         self.loop = asyncio.get_event_loop()
         self.loop.run_until_complete(self.ws)
         self.loop.run_forever()
+        """
+    
+    async def main(self):
+        self.loop = asyncio.get_running_loop()
+        self.stop = self.loop.create_future()
+        self.loop.add_signal_handler(signal.SIGTERM, self.stop.set_result, None)
+        async with websockets.serve(
+            self.receive,
+            host=self.host,
+            port=self.port,
+            process_request=self.health_check,
+        ):
+            await self.stop
 
     async def health_check(self,path, request_headers):
         if path == "/healthz":
